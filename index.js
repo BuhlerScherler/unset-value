@@ -8,7 +8,6 @@
 'use strict';
 
 var isObject = require('isobject');
-var has = require('has-value');
 
 module.exports = function unset(obj, prop) {
   if (!isObject(obj)) {
@@ -19,14 +18,11 @@ module.exports = function unset(obj, prop) {
     return true;
   }
 
-  if (has(obj, prop)) {
-    var segs = prop.split('.');
-    var last = segs.pop();
-    while (segs.length && segs[segs.length - 1].slice(-1) === '\\') {
-      last = segs.pop().slice(0, -1) + '.' + last;
-    }
-    while (segs.length) obj = obj[prop = segs.shift()];
-    return (delete obj[last]);
+  var segs = prop.split('.');
+  var last = segs.pop();
+  while (segs.length && segs[segs.length - 1].slice(-1) === '\\') {
+    last = segs.pop().slice(0, -1) + '.' + last;
   }
-  return true;
+  while (segs.length) obj = obj[prop = segs.shift()];
+  return (delete obj[last]);
 };
